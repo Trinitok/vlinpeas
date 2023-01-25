@@ -3,18 +3,13 @@ module peass2v
 import linpeas_analyzer.LinpeasFindings
 
 
-fn convert_linpeas_output_file(filename string) {
-	// TODO
-	println('TODO')
+struct FINAL_JSON {
+mut:
+	json map[string][]string = {}
 }
 
-fn convert_linpeas_output_str(out_str string) {
-	TITLE1_PATTERN = "══════════════╣"
-	TITLE2_PATTERN = "╔══════════╣"
-	TITLE3_PATTERN = "══╣"
-	INFO_PATTERN = "╚ "
-	TITLE_CHARS = ['═', '╔', '╣', '╚']
-	COLORS = {
+struct COLOR_MAP {
+	COLORS map[string][]string = {
 		"REDYELLOW": ['\x1b[1;31;103m'],
 		"RED": ['\x1b[1;31m'],
 		"GREEN": ['\x1b[1;32m'],
@@ -25,15 +20,35 @@ fn convert_linpeas_output_str(out_str string) {
 		"LIGHT_GREY": ['\x1b[1;37m'],
 		"DARKGREY": ['\x1b[1;90m'],
 	}
+}
 
-	// Final JSON structure
-	FINAL_JSON = {}
+struct C_SECTIONS {
+mut:
+	C_SECTION FINAL_JSON = FINAL_JSON{}
+	C_MAIN_SECTION FINAL_JSON = FINAL_JSON{}
+	C_2_SECTION FINAL_JSON = FINAL_JSON{}
+	C_3_SECTION FINAL_JSON = FINAL_JSON{}
+}
 
+struct PATTERNS {
+	TITLE1_PATTERN string = "══════════════╣"
+	TITLE2_PATTERN string = "╔══════════╣"
+	TITLE3_PATTERN string = "══╣"
+	INFO_PATTERN string = "╚ "
+	TITLE_CHARS string = ['═', '╔', '╣', '╚']
+}
+
+fn convert_linpeas_output_file(filename string) {
+	// TODO
+	println('TODO')
+}
+
+fn convert_linpeas_output_str(out_str string) {
 	// Constructing the structure
-	C_SECTION = FINAL_JSON
-	C_MAIN_SECTION = FINAL_JSON
-	C_2_SECTION = FINAL_JSON
-	C_3_SECTION = FINAL_JSON
+	C_SECTION = FINAL_JSON{}
+	C_MAIN_SECTION = FINAL_JSON{}
+	C_2_SECTION = FINAL_JSON{}
+	C_3_SECTION = FINAL_JSON{}
 
 
 }
@@ -48,7 +63,18 @@ fn get_colors(line string) map[string][]string {
 	return colors
 }
 
+//  parses a given line and adds it to the final json struct
+fn parse_line(line string) {
+	if "Cron jobs" in line:
+        a := 1
+}
+
 fn main_entry() {
+	final_json := FINAL_JSON{}
+	color_map := COLOR_MAP{}
+	c_sections := C_SECTIONS{}
+	patterns := PATTERNS{}
+
 	out_file := os.read_file('linpeas.out') or {
 		panic('There was an error reading the linpeas out file')
 	}
@@ -61,8 +87,8 @@ fn main_entry() {
 			continue
 		}
 
-		parse_line(line)
+		parse_line(line, final_json, color_map, c_sections, patterns)
 	}
 
-	print('i have finished')
+	print('i have finished with final json: ${FINAL_JSON}')
 }
